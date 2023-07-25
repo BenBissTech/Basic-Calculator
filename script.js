@@ -64,10 +64,43 @@ class Calculator {
         this.prevOp = '';
     }
 
+    getDisplayNumber(num) {
+        const stringNum = num.toString();
+
+        // seperates digits before and after decimal point
+        const intDigits = parseFloat(stringNum.split('.')[0]);
+        const decimalDigits = stringNum.split('.')[1];
+
+        let intDisplay;
+        // if not a number
+        if (isNaN(intDigits)) {
+            intDisplay = '';
+        }
+        else {
+            // delimits number by seperating each 3 digit sequence with a comma
+            intDisplay = intDigits.toLocaleString('en', {maximumFractionDigits: 0})
+        }
+
+        // if there are digits beyond a decimal point
+        if (decimalDigits != null) {
+            return `${intDisplay}.${decimalDigits}`;
+        }
+        else {
+            return intDisplay;
+        }
+    }
+
     // method used to update the display on the calculator
     handleChange() {
-        this.currOpTextElement.innerText = this.currOp;
-        this.prevOpTextElement.innerText = this.prevOp;
+        this.currOpTextElement.innerText = this.getDisplayNumber(this.currOp);
+
+        // appends operation to previous operand
+        if (this.op != null) {
+            this.prevOpTextElement.innerText = `${this.getDisplayNumber(this.prevOp)} ${this.op}`;
+        }
+        else {
+            this.prevOpTextElement.innerText = '';
+        }
     }
 }
 
