@@ -64,6 +64,34 @@ class Calculator {
         this.prevOp = '';
     }
 
+    // method to handel general exponentation
+    exponentation(expo) {
+        let computation;
+        let exponent = expo;
+        let curr = parseFloat(this.currOp);
+
+        if (isNaN(curr)) return;
+
+        switch (exponent) {
+            case 'x^2':
+                computation = curr * curr;
+                break;
+            case 'x^3':
+                computation = curr * curr * curr;
+                break;
+            case '√':
+                computation = Math.sqrt(curr);
+                break;
+            case '3√':
+                computation = Math.cbrt(curr);
+                break;
+            default:
+                return;
+        }
+
+        this.currOp = computation;
+    }
+
     getDisplayNumber(num) {
         const stringNum = num.toString();
 
@@ -95,7 +123,10 @@ class Calculator {
         this.currOpTextElement.innerText = this.getDisplayNumber(this.currOp);
 
         // appends operation to previous operand
-        if (this.op != null) {
+        if (this.op == 'x^2' || this.op == 'x^3' || this.op == '√' || this.op == '3√') {
+            this.currOpTextElement.innerText = this.currOp;
+        }
+        else if (this.op != null) {
             this.prevOpTextElement.innerText = `${this.getDisplayNumber(this.prevOp)} ${this.op}`;
         }
         else {
@@ -109,6 +140,7 @@ class Calculator {
 // Retrieve all buttons and required text elements
 const numButtons = document.querySelectorAll('[data-num]')
 const opButtons = document.querySelectorAll('[data-op]')
+const opExpoButtons = document.querySelectorAll('[data-op-expo')
 
 const equalsButton = document.querySelector('[data-equals]')
 const delButton = document.querySelector('[data-del]')
@@ -131,6 +163,13 @@ numButtons.forEach(button => {
 opButtons.forEach(button => {
     button.addEventListener('click', () => {
         calculator.chooseOperation(button.innerText);
+        calculator.handleChange();
+    })
+})
+
+opExpoButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        calculator.exponentation(button.innerText);
         calculator.handleChange();
     })
 })
